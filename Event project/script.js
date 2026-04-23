@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ticketCategory = document.getElementById('ticket-category');
 
     const downloadBtn = document.getElementById('downloadBtn');
+    const shareBtn = document.getElementById('shareBtn');
 
     // --- State Variables ---
     let userFullName = '';
@@ -252,10 +253,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /**
+     * Converts the ticket to an image and shares it using the Web Share API.
+     * Falls back to downloading if sharing is not supported.
+     */
+    async function handleShareTicket() {
+        console.log('Share button clicked. Attempting to generate and share ticket image...');
+
+        if (typeof html2canvas === 'undefined') {
+            console.error('Error: html2canvas library is not loaded. Cannot share ticket.');
+            alert('Sorry, there was an error preparing the share. Please try again in a moment.');
+            return;
+        }
+
+        try {
+            const canvas = await html2canvas(ticketPreview, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true,
+                allowTaint: true
+            });
+
+            // Convert canvas to a blob, which is required for the Web Share API
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            
+            const file = new File([blob], `AuraFest-Ticket-${userRegNumber}.png`, { type: 'image/png' });
+
+            const shareData = {
+                files: [file],
+                title: 'My AuraFest Ticket',
+                text: 'The legend awakens! 🏹 I just secured my entry for AuraFest: The Return of Ravana. The ritual begins soon... Get your exclusive token now at: https://rudra2-uok.netlify.app/'
+            };
+
+            // Check if the browser supports sharing this data
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                await navigator.share(shareData);
+                console.log('Ticket shared successfully.');
+            } else {
+                // Fallback for browsers that don't support sharing files
+                console.log('Web Share API not supported or cannot share this file, falling back to download.');
+                alert('Sharing is not supported on your browser. The ticket will be downloaded instead.');
+                downloadTicket(); // Trigger download as a fallback
+            }
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Error sharing ticket:', error);
+                alert('An error occurred while trying to share the ticket. Please check the console for details.');
+            } else {
+                console.log('Share action was cancelled by the user.');
+            }
+        }
+    }
+
     // --- Event Listeners ---
     loginBtn.addEventListener('click', handleLogin);
     questionnaireForm.addEventListener('submit', handleQuestionnaireSubmit);
     downloadBtn.addEventListener('click', downloadTicket);
+    shareBtn.addEventListener('click', handleShareTicket);
 });
 
 /**

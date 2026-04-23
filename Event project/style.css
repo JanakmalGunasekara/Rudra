@@ -9,6 +9,7 @@
     --accent-orange: #cc5500;
     --accent-gold: #e6ac00;
     --accent-purple: #4b0082;
+    --accent-burnt-orange: #bf5700;
     --border-color: #444;
 }
 
@@ -297,17 +298,41 @@ button:hover {
     box-shadow: 0 0 20px 5px var(--accent-purple);
 }
 
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ticket-actions button {
+    flex-grow: 1;
+}
+
 #downloadBtn {
     background-color: var(--accent-orange);
     border-color: var(--accent-red);
     color: var(--text-heading);
-    animation: pulse-glow 2.5s infinite ease-in-out;
+    animation: pulse-glow 2.5s infinite ease-in-out; /* This uses the orange glow */
 }
 
 #downloadBtn:hover {
     background-color: var(--accent-red);
     border-color: var(--accent-orange);
     box-shadow: 0 0 15px 5px var(--accent-red);
+}
+
+#shareBtn {
+    background-color: var(--accent-burnt-orange);
+    border-color: var(--accent-orange);
+    color: var(--text-heading);
+    animation: pulse-glow-orange 2.5s infinite ease-in-out;
+}
+
+#shareBtn:hover {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-burnt-orange);
+    color: var(--text-heading);
+    box-shadow: 0 0 15px 5px var(--accent-burnt-orange);
 }
 
 /* --- Map Section --- */
@@ -383,10 +408,18 @@ button:hover {
     100% { box-shadow: 0 0 6px 6px rgba(170, 0, 0, 0.3); border-color: var(--accent-gold); } /* Subtle glow at rest */
 }
 
+/* For splash screen logo and download button */
 @keyframes pulse-glow {
     0% { box-shadow: 0 0 8px 2px rgba(204, 85, 0, 0.6); }
     50% { box-shadow: 0 0 16px 6px rgba(204, 85, 0, 0.9); }
     100% { box-shadow: 0 0 8px 2px rgba(204, 85, 0, 0.6); }
+}
+
+/* New animation for the burnt orange share button */
+@keyframes pulse-glow-orange {
+    0% { box-shadow: 0 0 8px 2px rgba(191, 87, 0, 0.7); }
+    50% { box-shadow: 0 0 16px 6px rgba(191, 87, 0, 1); }
+    100% { box-shadow: 0 0 8px 2px rgba(191, 87, 0, 0.7); }
 }
 
 /* --- Responsive --- */
@@ -419,5 +452,8 @@ button:hover {
     }
     #ticket-preview {
         padding: 1.5rem;
+    }
+    .ticket-actions {
+        flex-direction: column;
     }
 }
