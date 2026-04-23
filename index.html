@@ -85,25 +85,25 @@
                 </form>
             </section>
 
-            <!-- 5. Token Preview & Download -->
+            <!-- 5. Ticket Generator & Download -->
             <section id="ticket-section" class="hidden">
                 <h2>Your Royal Pass</h2>
-                <div id="ticket-preview-container">
-                    <!-- This is the div that will be converted to an image -->
-                    <div id="ticket-preview">
-                        <h3>Decree of Lanka</h3>
-                        <div class="ticket-info">
-                            <p><strong>Name:</strong> <span id="ticket-name"></span></p>
-                            <p><strong>Reg. No:</strong> <span id="ticket-reg"></span></p>
-                            <p><strong>Pass ID:</strong> <span id="ticket-id"></span></p>
-                            <p><strong>Category:</strong> <span id="ticket-category"></span></p>
+                <div id="ticket-generator-container">
+                    <!-- This is the div that html2canvas will target -->
+                    <div id="ticket-capture-area">
+                        <img src="images/Token.jpg" alt="Rudra Entry Token" class="ticket-background-image">
+                        <div id="token-title-overlay">Rudra VIP Token</div>
+                        <div id="details-overlay-box">
+                            <div id="display-pass-type"></div>
+                            <div id="display-name"></div>
+                            <div id="display-reg"></div>
+                            <div id="display-token-id"></div>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="ticket-actions">
-                    <button id="downloadBtn">Claim Your Pass</button>
-                    <button id="shareBtn">Share Pass 📤</button>
+                    <button id="downloadBtn">Claim Your Token</button>
+                    <button id="shareBtn">Share Token 📤</button>
                 </div>
             </section>
 

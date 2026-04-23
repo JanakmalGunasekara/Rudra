@@ -230,72 +230,70 @@ button:hover {
     accent-color: var(--accent-red);
 }
 
-/* --- Ticket Preview & Download --- */
-#ticket-preview-container {
+/* --- Ticket Generator --- */
+#ticket-generator-container {
     padding: 1rem;
     background: rgba(0,0,0,0.3);
     border-radius: 8px;
     margin-bottom: 1rem;
 }
 
-#ticket-preview {
-    padding: 2rem;
-    border-radius: 15px;
-    color: var(--text-heading);
-    box-shadow: 0 0 20px 5px rgba(0,0,0,0.5);
-    transition: background 0.5s ease;
-    border: 3px solid transparent; /* Placeholder for gradient border */
+#ticket-capture-area {
     position: relative;
-    background-size: cover;
-    background-position: center;
+    width: 100%;
 }
 
-#ticket-preview h3 {
+.ticket-background-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+#token-title-overlay {
+    position: absolute;
+    top: 8%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.8rem;
     color: var(--text-heading);
-    border-bottom: 2px solid rgba(224, 220, 204, 0.5);
-    padding-bottom: 0.5rem;
-    margin-top: 0;
-    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
 }
 
-#ticket-preview .ticket-info p {
-    margin: 0.5rem 0;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+#details-overlay-box {
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    width: 40%;
+    height: 30%;
+    background-color: transparent;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-/* --- THEME: Warrior (Crimson) --- */
-.ticket-category-warrior {
-    background: linear-gradient(135deg, #6b0000, #a00);
-    border-color: #cc5500;
-    box-shadow: 0 0 20px 5px #a00;
+#details-overlay-box div {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: var(--accent-gold);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    font-size: 0.9rem; /* Default size for Name, Reg, ID */
+    line-height: 1.4;
 }
 
-/* --- THEME: Scholar (Gold/Parchment) --- */
-.ticket-category-scholar {
-    background-color: #b8860b;
-    background-image: linear-gradient(135deg, rgba(184, 134, 11, 0.9), rgba(240, 230, 140, 0.9)), url('https://www.transparenttextures.com/patterns/old-paper-v2.png');
-    border-color: #f0e68c;
-    color: #333; /* Darker text for readability on parchment */
-    box-shadow: 0 0 20px 5px #f0e68c;
-}
-.ticket-category-scholar h3, .ticket-category-scholar .ticket-info p {
-    color: #333;
-    text-shadow: none;
-}
-.ticket-category-scholar h3 {
-    border-bottom-color: rgba(51, 51, 51, 0.5);
-}
-
-/* --- THEME: King (Royal Purple/Gold) --- */
-.ticket-category-king {
-    background-color: var(--accent-purple);
-    /* 10-headed silhouette in the background */
-    background-image: linear-gradient(135deg, rgba(75, 0, 130, 0.95), rgba(44, 0, 76, 0.95)), url('https://i.imgur.com/L4Yd5dG.png');
-    background-repeat: no-repeat;
-    background-position: center 110%;
-    background-size: 80%;
-    border-color: var(--accent-gold);
-    box-shadow: 0 0 20px 5px var(--accent-purple);
+/* Specific override for the Pass Type to make it prominent */
+#display-pass-type {
+    font-size: 1.1rem; /* Larger font */
+    text-transform: uppercase;
+    margin-bottom: 0.2rem; /* A little space below */
 }
 
 .ticket-actions {
@@ -450,8 +448,19 @@ button:hover {
     #map-canvas {
         height: 400px;
     }
+    #token-title-overlay {
+        font-size: 1.4rem;
+        top: 7%;
+    }
     #ticket-preview {
         padding: 1.5rem;
+    }
+    #details-overlay-box div {
+        font-size: 0.7rem; /* Default mobile size */
+        line-height: 1.3;
+    }
+    #display-pass-type {
+        font-size: 0.8rem; /* Prominent mobile size */
     }
     .ticket-actions {
         flex-direction: column;

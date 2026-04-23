@@ -18,11 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const ticketPreview = document.getElementById('ticket-preview');
     const mapSection = document.getElementById('map-section');
 
-    const ticketName = document.getElementById('ticket-name');
-    const ticketReg = document.getElementById('ticket-reg');
-    const ticketId = document.getElementById('ticket-id');
-    const ticketCategory = document.getElementById('ticket-category');
-
     const downloadBtn = document.getElementById('downloadBtn');
     const shareBtn = document.getElementById('shareBtn');
 
@@ -153,42 +148,41 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        let category;
-        let categoryName;
+        // Scoring logic
+        const scoreMap = { 'a': 1, 'b': 2, 'c': 3 };
+        const totalScore = scoreMap[q1] + scoreMap[q2] + scoreMap[q3];
 
-        // Warrior: For the fierce and energetic (Rock fans)
-        if (q1 === 'b' || q3 === 'b') {
-            category = 'warrior';
-            categoryName = 'Warrior Class';
-        }
-        // King: For those who seek power and luxury (VIP, Pop Queen)
-        else if (q2 === 'c' || q3 === 'c') {
-            category = 'king';
-            categoryName = 'Royal Court';
-        // Scholar: For the mystics and observers (EDM, Chillers)
-        } else {
-            category = 'scholar';
-            categoryName = 'Mystic Order';
+        let passName;
+        if (totalScore >= 3 && totalScore <= 5) {
+            passName = 'DANDU MONARA PASS';
+        } else if (totalScore >= 6 && totalScore <= 7) {
+            passName = 'RAKSHASA PASS';
+        } else { // Score 8-9
+            passName = 'YAKSHA ADHIPATHI PASS';
         }
 
-        generateTicket(category, categoryName);
+        // Pass the determined name to the ticket generator
+        generateTicket(passName);
     }
 
     /**
      * Generates and displays the personalized ticket in the preview container.
-     * @param {string} category - The ticket category ('warrior', 'scholar', or 'king').
-     * @param {string} categoryName - The display name for the category.
+     * @param {string} passName - The name of the pass determined by the questionnaire score.
      */
-    function generateTicket(category, categoryName) {
-        // Populate ticket with user and dynamic data
-        ticketName.textContent = userFullName;
-        ticketReg.textContent = userRegNumber;
-        ticketId.textContent = `EVT-${Date.now()}`; // Unique ID using timestamp
-        ticketCategory.textContent = categoryName;
+    function generateTicket(passName) {
+        // Get the new display elements inside the overlay
+        const displayName = document.getElementById('display-name');
+        const displayReg = document.getElementById('display-reg');
+        const displayTokenId = document.getElementById('display-token-id');
+        const displayPassType = document.getElementById('display-pass-type'); // New element
 
-        // Apply category-specific styling by managing CSS classes
-        ticketPreview.classList.remove('ticket-category-warrior', 'ticket-category-scholar', 'ticket-category-king');
-        ticketPreview.classList.add(`ticket-category-${category}`);
+        // Populate ticket with user and dynamic data
+        displayPassType.textContent = passName; // Set the pass name
+        displayName.textContent = userFullName;
+        displayReg.textContent = `Reg: ${userRegNumber}`;
+        // Generate a unique token ID as requested
+        const tokenId = 'RVN-' + Math.floor(1000 + Math.random() * 9000);
+        displayTokenId.textContent = `Token: ${tokenId}`;
 
         // --- MODIFIED FOR FADE ANIMATION ---
         // 1. Prepare the ticket section to be shown. Start it transparent and remove the 'hidden' class.
@@ -223,33 +217,37 @@ document.addEventListener('DOMContentLoaded', () => {
      * Converts the ticket preview div to a PNG image and initiates a download.
      */
     function downloadTicket() {
-        console.log('Download button clicked. Attempting to generate ticket image...');
+        console.log('Download button clicked. Attempting to generate token image...');
+        const captureArea = document.getElementById('ticket-capture-area');
 
-        // Check if html2canvas library is loaded to provide better user feedback.
+        if (!captureArea) {
+            console.error('Error: Ticket capture area not found.');
+            alert('Sorry, an error occurred. Please try again.');
+            return;
+        }
+
         if (typeof html2canvas === 'undefined') {
-            console.error('Error: html2canvas library is not loaded. Cannot download ticket.');
-            alert('Sorry, there was an error preparing the download. Please try again in a moment.');
+            console.error('Error: html2canvas library is not loaded. Cannot download token.');
+            alert('Sorry, there was an error preparing the download. Please try again.');
             return;
         }
 
         // Use html2canvas to capture the div
-        html2canvas(ticketPreview, {
-            scale: 2, // Use a higher scale for better image resolution
-            backgroundColor: null, // Allows for transparency
-            // Add useCORS and allowTaint to handle potential security/CORS issues, especially when running locally.
+        html2canvas(captureArea, {
+            scale: 3, // Use a higher scale for better image resolution, as requested
+            backgroundColor: null,
             useCORS: true,
             allowTaint: true
         }).then(canvas => {
             // Create a temporary link to trigger the download
             const link = document.createElement('a');
-            link.download = `AuraFest-Ticket-${userRegNumber}.png`;
+            link.download = `AuraFest-Token-${userRegNumber}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-            console.log('Ticket download initiated successfully.');
+            console.log('Token download initiated successfully.');
         }).catch(error => {
-            // Add a catch block to log any specific errors from html2canvas.
             console.error('html2canvas failed:', error);
-            alert('An error occurred while generating the ticket image. Please check the console for details.');
+            alert('An error occurred while generating the token image. Please check the console for details.');
         });
     }
 
@@ -258,17 +256,24 @@ document.addEventListener('DOMContentLoaded', () => {
      * Falls back to downloading if sharing is not supported.
      */
     async function handleShareTicket() {
-        console.log('Share button clicked. Attempting to generate and share ticket image...');
+        console.log('Share button clicked. Attempting to generate and share token image...');
+        const captureArea = document.getElementById('ticket-capture-area');
+
+        if (!captureArea) {
+            console.error('Error: Ticket capture area not found.');
+            alert('Sorry, an error occurred. Please try again.');
+            return;
+        }
 
         if (typeof html2canvas === 'undefined') {
-            console.error('Error: html2canvas library is not loaded. Cannot share ticket.');
-            alert('Sorry, there was an error preparing the share. Please try again in a moment.');
+            console.error('Error: html2canvas library is not loaded. Cannot share token.');
+            alert('Sorry, there was an error preparing the share. Please try again.');
             return;
         }
 
         try {
-            const canvas = await html2canvas(ticketPreview, {
-                scale: 2,
+            const canvas = await html2canvas(captureArea, {
+                scale: 3, // High resolution for sharing
                 backgroundColor: null,
                 useCORS: true,
                 allowTaint: true
@@ -277,28 +282,28 @@ document.addEventListener('DOMContentLoaded', () => {
             // Convert canvas to a blob, which is required for the Web Share API
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
             
-            const file = new File([blob], `AuraFest-Ticket-${userRegNumber}.png`, { type: 'image/png' });
+            const file = new File([blob], `AuraFest-Token-${userRegNumber}.png`, { type: 'image/png' });
 
             const shareData = {
                 files: [file],
-                title: 'My AuraFest Ticket',
-                text: 'The legend awakens! 🏹 I just secured my entry for AuraFest: The Return of Ravana. The ritual begins soon... Get your exclusive token now at: https://rudra2-uok.netlify.app/'
+                title: 'My AuraFest Entry Token',
+                text: 'My saga begins! I just got my exclusive entry token for AuraFest - The Return of Ravana. Witness the legend at: https://rudra2-uok.netlify.app/'
             };
 
             // Check if the browser supports sharing this data
             if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
                 await navigator.share(shareData);
-                console.log('Ticket shared successfully.');
+                console.log('Token shared successfully.');
             } else {
                 // Fallback for browsers that don't support sharing files
                 console.log('Web Share API not supported or cannot share this file, falling back to download.');
-                alert('Sharing is not supported on your browser. The ticket will be downloaded instead.');
+                alert('Native sharing not supported. Your token has been downloaded; please share it manually.');
                 downloadTicket(); // Trigger download as a fallback
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.error('Error sharing ticket:', error);
-                alert('An error occurred while trying to share the ticket. Please check the console for details.');
+                console.error('Error sharing token:', error);
+                alert('An error occurred while trying to share the token. Please check the console for details.');
             } else {
                 console.log('Share action was cancelled by the user.');
             }
