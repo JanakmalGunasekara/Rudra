@@ -1,0 +1,459 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-container: #252525;
+    --text-light: #e0dccc;
+    --text-heading: #f5f5f5;
+    --accent-red: #a00;
+    --accent-orange: #cc5500;
+    --accent-gold: #e6ac00;
+    --accent-purple: #4b0082;
+    --accent-burnt-orange: #bf5700;
+    --border-color: #444;
+}
+
+/* --- General & Thematic Styles --- */
+body {
+    font-family: 'Cinzel', serif;
+    background-color: var(--bg-dark);
+    /* Subtle stone texture background */
+    background-image: url('https://www.transparenttextures.com/patterns/rocky-wall.png');
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    letter-spacing: 0.05em;
+}
+
+/* --- Splash Screen --- */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 1.5s ease-in-out;
+}
+
+#splash-screen img {
+    max-width: 90%;
+    max-height: 90%;
+    width: 400px; /* Adjust as needed */
+    animation: pulse-glow 3s infinite alternate;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    background: var(--bg-container);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 0 25px 5px rgba(0, 0, 0, 0.5), 0 0 15px 2px var(--accent-gold) inset;
+    transition: all 0.8s ease-in-out;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    color: var(--text-heading);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 5px var(--accent-orange);
+}
+
+section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* --- Section Transitions --- */
+#login-section, #main-content, #ticket-section {
+    transition: opacity 0.8s ease-in-out;
+}
+
+.hidden {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+/* --- Forms & Buttons --- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: #333;
+    color: var(--text-light);
+    font-family: 'Cinzel', serif;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #383838;
+    color: white;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px 1px rgba(0,0,0,0.5) inset;
+}
+
+button:hover {
+    background-color: #444;
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 10px 2px var(--accent-red);
+}
+
+/* --- Dashboard & Countdown --- */
+#dashboard-section .event-details {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin: 1.5rem 0;
+    background: rgba(0,0,0,0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #111; /* The stone trench */
+    border: 2px solid #444;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1rem 0;
+    padding: 3px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7) inset;
+}
+
+.progress-bar {
+    height: 20px;
+    width: 0%;
+    /* Glowing lava trail */
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-red));
+    box-shadow: 0 0 10px var(--accent-orange), 0 0 5px var(--accent-red) inset;
+    border-radius: 5px;
+    transition: width 1s ease-in-out;
+}
+
+#countdown-timer {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+#countdown-timer span:first-child {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-gold);
+    text-shadow: 0 0 8px var(--accent-gold);
+}
+
+#countdown-timer span:last-child {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+    letter-spacing: 0.1em;
+}
+
+/* --- Questionnaire --- */
+#questionnaire-form fieldset {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#questionnaire-form legend {
+    font-weight: bold;
+    padding: 0 1rem;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+}
+
+#questionnaire-form label {
+    display: block;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#questionnaire-form label:hover {
+    color: var(--accent-gold);
+}
+
+#questionnaire-form input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: var(--accent-red);
+}
+
+/* --- Ticket Preview & Download --- */
+#ticket-preview-container {
+    padding: 1rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+#ticket-preview {
+    padding: 2rem;
+    border-radius: 15px;
+    color: var(--text-heading);
+    box-shadow: 0 0 20px 5px rgba(0,0,0,0.5);
+    transition: background 0.5s ease;
+    border: 3px solid transparent; /* Placeholder for gradient border */
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+#ticket-preview h3 {
+    color: var(--text-heading);
+    border-bottom: 2px solid rgba(224, 220, 204, 0.5);
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+    text-shadow: 0 0 5px rgba(0,0,0,0.8);
+}
+
+#ticket-preview .ticket-info p {
+    margin: 0.5rem 0;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+/* --- THEME: Warrior (Crimson) --- */
+.ticket-category-warrior {
+    background: linear-gradient(135deg, #6b0000, #a00);
+    border-color: #cc5500;
+    box-shadow: 0 0 20px 5px #a00;
+}
+
+/* --- THEME: Scholar (Gold/Parchment) --- */
+.ticket-category-scholar {
+    background-color: #b8860b;
+    background-image: linear-gradient(135deg, rgba(184, 134, 11, 0.9), rgba(240, 230, 140, 0.9)), url('https://www.transparenttextures.com/patterns/old-paper-v2.png');
+    border-color: #f0e68c;
+    color: #333; /* Darker text for readability on parchment */
+    box-shadow: 0 0 20px 5px #f0e68c;
+}
+.ticket-category-scholar h3, .ticket-category-scholar .ticket-info p {
+    color: #333;
+    text-shadow: none;
+}
+.ticket-category-scholar h3 {
+    border-bottom-color: rgba(51, 51, 51, 0.5);
+}
+
+/* --- THEME: King (Royal Purple/Gold) --- */
+.ticket-category-king {
+    background-color: var(--accent-purple);
+    /* 10-headed silhouette in the background */
+    background-image: linear-gradient(135deg, rgba(75, 0, 130, 0.95), rgba(44, 0, 76, 0.95)), url('https://i.imgur.com/L4Yd5dG.png');
+    background-repeat: no-repeat;
+    background-position: center 110%;
+    background-size: 80%;
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 20px 5px var(--accent-purple);
+}
+
+.ticket-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ticket-actions button {
+    flex-grow: 1;
+}
+
+#downloadBtn {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-red);
+    color: var(--text-heading);
+    animation: pulse-glow 2.5s infinite ease-in-out; /* This uses the orange glow */
+}
+
+#downloadBtn:hover {
+    background-color: var(--accent-red);
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 15px 5px var(--accent-red);
+}
+
+#shareBtn {
+    background-color: var(--accent-burnt-orange);
+    border-color: var(--accent-orange);
+    color: var(--text-heading);
+    animation: pulse-glow-orange 2.5s infinite ease-in-out;
+}
+
+#shareBtn:hover {
+    background-color: var(--accent-orange);
+    border-color: var(--accent-burnt-orange);
+    color: var(--text-heading);
+    box-shadow: 0 0 15px 5px var(--accent-burnt-orange);
+}
+
+/* --- Map Section --- */
+#map-container {
+    border: 3px solid var(--border-color);
+    border-radius: 8px;
+    padding: 5px;
+    background: var(--bg-dark);
+    box-shadow: 0 0 15px rgba(0,0,0,0.7) inset;
+    margin-top: 1.5rem;
+}
+
+#map-canvas {
+    width: 100%;
+    height: 500px;
+    border-radius: 4px;
+}
+
+/* Custom Marker for Google Map */
+.blinking-marker {
+    width: 22px; /* Slightly larger for better visibility */
+    height: 22px; /* Slightly larger for better visibility */
+    border-radius: 50%;
+    background-color: var(--accent-red);
+    animation: pulse-marker 2s infinite ease-in-out;
+    cursor: pointer;
+    border: 2px solid var(--accent-gold);
+}
+
+/* InfoWindow Content */
+.map-infowindow-content { /* Increased padding for better readability */
+    padding: 1rem 1.2rem;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Cinzel', serif;
+}
+.map-infowindow-content h4 {
+    color: var(--accent-gold);
+    margin: 0 0 0.5rem 0;
+    text-align: left;
+    text-shadow: none;
+    letter-spacing: 0.1em;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+.map-infowindow-content p {
+    margin: 0; /* No change */
+    font-size: 1rem; /* Slightly larger font for readability */
+    line-height: 1.4;
+}
+
+/* --- Leaflet Popup Theming --- */
+.leaflet-popup-content-wrapper {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+    border-radius: 8px;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important; /* Override default leaflet margin */
+    width: auto !important; /* Override default leaflet width */
+}
+
+.leaflet-popup-tip-container {
+    display: none; /* Hide the default arrow tip */
+}
+
+/* Keyframe for the blinking map marker */
+@keyframes pulse-marker { /* Enhanced glow for better visibility */
+    0% { box-shadow: 0 0 0 0 var(--accent-red); border-color: var(--accent-gold); }
+    50% { box-shadow: 0 0 12px 18px rgba(170, 0, 0, 0.7); border-color: var(--accent-red); } /* More intense peak glow */
+    100% { box-shadow: 0 0 6px 6px rgba(170, 0, 0, 0.3); border-color: var(--accent-gold); } /* Subtle glow at rest */
+}
+
+/* For splash screen logo and download button */
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 8px 2px rgba(204, 85, 0, 0.6); }
+    50% { box-shadow: 0 0 16px 6px rgba(204, 85, 0, 0.9); }
+    100% { box-shadow: 0 0 8px 2px rgba(204, 85, 0, 0.6); }
+}
+
+/* New animation for the burnt orange share button */
+@keyframes pulse-glow-orange {
+    0% { box-shadow: 0 0 8px 2px rgba(191, 87, 0, 0.7); }
+    50% { box-shadow: 0 0 16px 6px rgba(191, 87, 0, 1); }
+    100% { box-shadow: 0 0 8px 2px rgba(191, 87, 0, 0.7); }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+    .container {
+        padding: 1.5rem 1rem;
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+        min-height: 100vh;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    h2 {
+        font-size: 1.4rem;
+    }
+    #dashboard-section .event-details {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    #countdown-timer span:first-child {
+        font-size: 1.75rem;
+    }
+    #map-canvas {
+        height: 400px;
+    }
+    #ticket-preview {
+        padding: 1.5rem;
+    }
+    .ticket-actions {
+        flex-direction: column;
+    }
+}
