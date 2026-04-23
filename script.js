@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const shareData = {
                 files: [file],
                 title: 'My AuraFest Entry Token',
-                text: 'My saga begins! I just got my exclusive entry token for AuraFest - The Return of Ravana. Witness the legend at: https://rudra2-uok.netlify.app/'
+                text: 'My saga begins! I just got my exclusive entry token for AuraFest - The Return of Ravana. Witness the legend at: https://rudra-uok.netlify.app/'
             };
 
             // Check if the browser supports sharing this data
