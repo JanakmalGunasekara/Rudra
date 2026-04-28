@@ -152,37 +152,39 @@ document.addEventListener('DOMContentLoaded', () => {
         const scoreMap = { 'a': 1, 'b': 2, 'c': 3 };
         const totalScore = scoreMap[q1] + scoreMap[q2] + scoreMap[q3];
 
-        let passName;
+        let passImage;
         if (totalScore >= 3 && totalScore <= 5) {
-            passName = 'DANDU MONARA PASS';
+            passImage = 'images/pass1.jpeg';
         } else if (totalScore >= 6 && totalScore <= 7) {
-            passName = 'RAKSHASA PASS';
+            passImage = 'images/pass2.jpeg';
         } else { // Score 8-9
-            passName = 'YAKSHA ADHIPATHI PASS';
+            passImage = 'images/pass3.jpeg';
         }
 
-        // Pass the determined name to the ticket generator
-        generateTicket(passName);
+        // Pass the determined image path to the ticket generator
+        generateTicket(passImage);
     }
 
     /**
      * Generates and displays the personalized ticket in the preview container.
-     * @param {string} passName - The name of the pass determined by the questionnaire score.
+     * @param {string} passImage - The path to the pass image determined by the score.
      */
-    function generateTicket(passName) {
+    function generateTicket(passImage) {
         // Get the new display elements inside the overlay
+        const ticketBgImg = document.getElementById('ticket-bg-img');
         const displayName = document.getElementById('display-name');
         const displayReg = document.getElementById('display-reg');
         const displayTokenId = document.getElementById('display-token-id');
-        const displayPassType = document.getElementById('display-pass-type'); // New element
 
+        // Set the dynamic background image based on score
+        ticketBgImg.src = passImage;
+        
         // Populate ticket with user and dynamic data
-        displayPassType.textContent = passName; // Set the pass name
         displayName.textContent = userFullName;
-        displayReg.textContent = `Reg: ${userRegNumber}`;
+        displayReg.textContent = userRegNumber;
         // Generate a unique token ID as requested
         const tokenId = 'RVN-' + Math.floor(1000 + Math.random() * 9000);
-        displayTokenId.textContent = `Token: ${tokenId}`;
+        displayTokenId.textContent = tokenId;
 
         // --- MODIFIED FOR FADE ANIMATION ---
         // 1. Prepare the ticket section to be shown. Start it transparent and remove the 'hidden' class.
