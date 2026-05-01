@@ -10,6 +10,8 @@
     <!-- Leaflet.js for the map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Supabase.js Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- html2canvas library for image conversion (integrity/crossorigin removed to avoid local file issues) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -91,7 +93,7 @@
                 <div id="ticket-generator-container">
                     <!-- This is the div that html2canvas will target -->
                     <div id="ticket-capture-area">
-                        <img id="ticket-bg-img" alt="Rudra Entry Pass" class="ticket-background-image">
+                        <img id="ticket-bg-img" alt="Rudra Entry Pass" class="ticket-background-image" crossorigin="anonymous">
                         <!-- User details are overlaid with absolute positioning -->
                         <div id="display-name" class="ticket-detail-overlay"></div>
                         <div id="display-reg" class="ticket-detail-overlay"></div>

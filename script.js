@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadBtn = document.getElementById('downloadBtn');
     const shareBtn = document.getElementById('shareBtn');
 
+    // --- Supabase Configuration ---
+    const SUPABASE_URL = 'https://lxlvkiraobhwmbznrxxi.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_OxeH367mxpro7x0A7IuX2w_xJ-n1ebe';
+    // The global 'supabase' object is brought in by the script tag in index.html
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // --- State Variables ---
     let userFullName = '';
     let userRegNumber = '';
@@ -40,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Configuration ---
     // IMPORTANT: Make sure this date is in the future for the countdown to work.
-    const eventStartDate = new Date('2026-04-28T20:00:00');
+    const eventStartDate = new Date('2026-05-15T20:00:00');
     
     /**
      * Handles the login process, saves user data, and reveals the main dashboard.
@@ -131,45 +137,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Determines ticket category based on questionnaire answers and generates the ticket.
+     * Determines ticket category, checks for existing users in Supabase,
+     * saves new users, and then generates the ticket.
      * @param {Event} e - The form submission event.
      */
-    function handleQuestionnaireSubmit(e) {
+    async function handleQuestionnaireSubmit(e) {
         e.preventDefault(); // Prevent page reload on form submission
 
+        const submitButton = questionnaireForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Forging...';
+
+        // Basic validation for form data
         const formData = new FormData(questionnaireForm);
         const q1 = formData.get('q1');
         const q2 = formData.get('q2');
         const q3 = formData.get('q3');
 
-        // Basic validation
         if (!q1 || !q2 || !q3) {
             alert('You must answer all questions to determine your fate.');
+            submitButton.disabled = false;
+            submitButton.textContent = 'Forge My Mark';
             return;
         }
 
-        // Scoring logic
-        const scoreMap = { 'a': 1, 'b': 2, 'c': 3 };
-        const totalScore = scoreMap[q1] + scoreMap[q2] + scoreMap[q3];
+        try {
+            // Check if a user with this registration number already exists
+            const { data: existingUsers, error: fetchError } = await supabaseClient
+                .from('Rudra')
+                .select('name, reg_no, pass_type, token_no')
+                .eq('reg_no', userRegNumber)
+                // We remove .single() to handle cases where duplicate entries might exist.
 
-        let passImage;
-        if (totalScore >= 3 && totalScore <= 5) {
-            passImage = 'images/pass1.jpeg';
-        } else if (totalScore >= 6 && totalScore <= 7) {
-            passImage = 'images/pass2.jpeg';
-        } else { // Score 8-9
-            passImage = 'images/pass3.jpeg';
+            // Handle any potential error during the fetch.
+            if (fetchError) {
+                throw fetchError;
+            }
+
+            // If the array contains one or more users, it means the user exists.
+            if (existingUsers && existingUsers.length > 0) {
+                // Use the first record found, even if there are duplicates.
+                const existingUser = existingUsers[0];
+
+                // --- USER EXISTS ---
+                alert('You have already generated your token!');
+                
+                // We need to map the stored pass_type back to an image file
+                const passImageMap = {
+                    'pass1': 'images/pass1.jpeg',
+                    'pass2': 'images/pass2.jpeg',
+                    'pass3': 'images/pass3.jpeg'
+                };
+                const passImage = passImageMap[existingUser.pass_type] || 'images/pass1.jpeg'; // Fallback
+
+                // Generate the ticket using the data from the database
+                generateTicket(passImage, existingUser.token_no);
+
+            } else {
+                // --- NEW USER ---
+                // Scoring logic to determine pass type
+                const scoreMap = { 'a': 1, 'b': 2, 'c': 3 };
+                const totalScore = scoreMap[q1] + scoreMap[q2] + scoreMap[q3];
+
+                let passType;
+                let passImage;
+                if (totalScore >= 3 && totalScore <= 5) {
+                    passType = 'pass1';
+                    passImage = 'images/pass1.jpeg';
+                } else if (totalScore >= 6 && totalScore <= 7) {
+                    passType = 'pass2';
+                    passImage = 'images/pass2.jpeg';
+                } else { // Score 8-9
+                    passType = 'pass3';
+                    passImage = 'images/pass3.jpeg';
+                }
+
+                // Generate a new token ID
+                const tokenId = 'RVN-' + Math.floor(1000 + Math.random() * 9000);
+
+                // Save the new user's data to Supabase
+                const { error: insertError } = await supabaseClient
+                    .from('Rudra')
+                    .insert([{ 
+                        name: userFullName, 
+                        reg_no: userRegNumber, 
+                        pass_type: passType, 
+                        token_no: tokenId 
+                    }]);
+
+                if (insertError) {
+                    throw insertError; // Throw if the insert fails
+                }
+
+                // Proceed to generate the ticket with the new data
+                generateTicket(passImage, tokenId);
+            }
+        } catch (error) {
+            console.error('Error during token generation:', error);
+            alert(`An error occurred: ${error.message}. Please check the console and try again.`);
+            submitButton.disabled = false;
+            submitButton.textContent = 'Forge My Mark';
         }
-
-        // Pass the determined image path to the ticket generator
-        generateTicket(passImage);
     }
 
     /**
      * Generates and displays the personalized ticket in the preview container.
      * @param {string} passImage - The path to the pass image determined by the score.
+     * @param {string} tokenId - The unique token ID for the user (from DB or newly generated).
      */
-    function generateTicket(passImage) {
+    function generateTicket(passImage, tokenId) {
         // Get the new display elements inside the overlay
         const ticketBgImg = document.getElementById('ticket-bg-img');
         const displayName = document.getElementById('display-name');
@@ -182,8 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate ticket with user and dynamic data
         displayName.textContent = userFullName;
         displayReg.textContent = userRegNumber;
-        // Generate a unique token ID as requested
-        const tokenId = 'RVN-' + Math.floor(1000 + Math.random() * 9000);
+        // Use the provided token ID
         displayTokenId.textContent = tokenId;
 
         // --- MODIFIED FOR FADE ANIMATION ---
@@ -236,10 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Use html2canvas to capture the div
         html2canvas(captureArea, {
-            scale: 3, // Use a higher scale for better image resolution, as requested
-            backgroundColor: null,
             useCORS: true,
-            allowTaint: true
+            allowTaint: false,
+            scale: 3,
+            backgroundColor: null
         }).then(canvas => {
             // Create a temporary link to trigger the download
             const link = document.createElement('a');
@@ -275,16 +350,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const canvas = await html2canvas(captureArea, {
-                scale: 3, // High resolution for sharing
-                backgroundColor: null,
                 useCORS: true,
-                allowTaint: true
+                allowTaint: false,
+                scale: 3, // High resolution for sharing
+                backgroundColor: null
             });
 
             // Convert canvas to a blob, which is required for the Web Share API
             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
             
-            const file = new File([blob], `AuraFest-Token-${userRegNumber}.png`, { type: 'image/png' });
+            const file = new File([blob], `Rudra-Token-${userRegNumber}.png`, { type: 'image/png' });
 
             const shareData = {
                 files: [file],
@@ -373,4 +448,43 @@ function initMap() {
 
         marker.bindPopup(popupContent);
     });
+
+    // --- Live Geolocation Tracking ---
+    let userLocationMarker = null;
+    let userAccuracyCircle = null;
+
+    map.on('locationfound', (e) => {
+        // Remove previous marker and circle to avoid leaving a trail
+        if (userLocationMarker) {
+            map.removeLayer(userLocationMarker);
+        }
+        if (userAccuracyCircle) {
+            map.removeLayer(userAccuracyCircle);
+        }
+
+        // Create a blue circle marker for the user's current location
+        userLocationMarker = L.circleMarker(e.latlng, {
+            radius: 8,
+            color: 'white',       // White border
+            weight: 2,            // Border width
+            fillColor: '#3388ff', // Solid blue fill
+            fillOpacity: 1
+        }).addTo(map);
+
+        // Create a semi-transparent circle to show the accuracy radius
+        userAccuracyCircle = L.circle(e.latlng, e.accuracy, {
+            color: '#aed6f1',     // Light blue
+            fillColor: '#aed6f1',
+            fillOpacity: 0.15,
+            weight: 0             // No border for the accuracy circle
+        }).addTo(map);
+    });
+
+    map.on('locationerror', (e) => {
+        // Display a Ravana-themed notification if location access is denied
+        alert('To navigate the realm, please enable your location services.');
+    });
+
+    // Start tracking the user's location in real-time
+    map.locate({ setView: true, watch: true, maxZoom: 16 });
 }
